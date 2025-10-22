@@ -1,7 +1,39 @@
 # Grocl — Broadcast sender
-
 Ce dépôt contient un firmware ESP32 qui lit des données de vent depuis la SPIFFS (`data/wind.json`) et diffuse des angles via ESP-NOW.
-
+ # Grocl — Broadcast sender 🚀
+ 
+ Firmware ESP32 minimal qui lit des données de vent depuis la SPIFFS (`data/wind.json`) et diffuse des angles via ESP-NOW.
+ 
+ ## 🔌 Canal Wi‑Fi et ESP-NOW
+ 
+ ESP-NOW fonctionne sur un canal Wi‑Fi 2.4 GHz (1–13 selon la région). Le canal utilisé par l'émetteur est défini dans `src/main.cpp` via la constante `WIFI_CHANNEL`.
+ 
+ 🎨 Mapping couleur → canal (convention du projet) :
+ 
+ - 🔴 Rouge  — canal 1
+ - 🟢 Vert   — canal 5
+ - ⚪ Blanc  — canal 9
+ - ⚫ Noir   — canal 13
+ 
+ ⚠️ Remarque : les canaux 2.4 GHz se chevauchent
+ 
+ Les canaux adjacents sur la bande 2.4 GHz se recouvrent partiellement. Par exemple, le canal 1 chevauche les canaux 2, 3 et 4. Cela peut provoquer des interférences si deux appareils sont réglés sur des canaux proches.
+ 
+ ✅ Recommandation : pour réduire les interférences dans des environnements chargés, préférez des canaux non-chevauchants comme 1, 6 et 11 (séparés et généralement plus stables).
+ 
+ ## 🛠️ Conseils pratiques
+ 
+ - Assurez-vous que tous les appareils ESP-NOW qui doivent communiquer utilisent le même `WIFI_CHANNEL`.
+ - Si vous observez des pertes ou des perturbations, essayez un autre canal (1, 6 ou 11).
+ - Vérifiez la réglementation locale : certains canaux peuvent être restreints selon votre pays.
+ 
+ Pour modifier le canal : ouvrez `src/main.cpp` et changez la ligne :
+ 
+ ```cpp
+ #define WIFI_CHANNEL 1
+ ```
+ 
+ Puis rebuild/flash le firmware 
 ## Canal Wi‑Fi et ESP-NOW
 
 ESP-NOW fonctionne sur un canal Wi‑Fi 2.4 GHz précis (1–13 selon la région). Dans `src/main.cpp` la constante `WIFI_CHANNEL` définit le canal utilisé par l'émetteur.
@@ -30,5 +62,3 @@ Pour modifier le canal, ouvrez `src/main.cpp` et changez la définition :
 ```
 
 Puis rebuild/flash le firmware.
-
-Si vous voulez, j'ajoute une option de configuration dans `data/config.json` pour définir le canal sans recompiler.
