@@ -5,10 +5,13 @@
 #include <ESP32Servo.h>
 
 // Pin pour le servo moteur
-#define SERVO_PIN 13
-
+#define SERVO_PIN 16
 // Crée un objet servo
 Servo myServo;
+
+//Rouge canal 1 // Vert Canal 5 // Blanc Canal 9 // Noir Canal 13
+
+#define WIFI_CHANNEL 13
 
 // Structure pour recevoir les données
 typedef struct struct_message {
@@ -40,7 +43,6 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int len) {
   Serial.println(myData.angle);
 }
 
-#define WIFI_CHANNEL 1
 
 void setup() {
   // Initialize Serial Monitor

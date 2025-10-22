@@ -19,7 +19,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
 
 // Canal WiFi à utiliser (1-13)
-#define WIFI_CHANNEL 1
+//Rouge canal 1 // Vert Canal 2 // Blanc Canal 3 // Noir Canal 4
+#define WIFI_CHANNEL 3
 
 void setup() {
   // Initialize Serial Monitor
@@ -91,7 +92,7 @@ void loop() {
 
   // Incrémente l'angle
   angle = (angle + 10) % 181;  // Incrémente par pas de 10, reste entre 0 et 180
-  
+  //angle=90;
   // Attend 5 secondes
   delay(50);
 }
