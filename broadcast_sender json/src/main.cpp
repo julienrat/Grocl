@@ -5,7 +5,8 @@
 #include <SPIFFS.h>
 #include <cctype>
 #include <vector>
-
+int map_value=0;
+bool invert_map=false;
 // Structure du message à envoyer
 typedef struct struct_message {
   int angle;
@@ -16,8 +17,8 @@ struct_message myData;
 
 // Callback quand les données sont envoyées
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("Statut d'envoi: ");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Succès" : "Échec");
+ // Serial.print("Statut d'envoi: ");
+ // Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Succès" : "Échec");
 }
 
 // Canal WiFi à utiliser (1-13)
@@ -199,9 +200,9 @@ void setup() {
 
 void loop() {
   static int currentAngle = 0;
-
+  
   if (windValues.empty()) {
-    delay(1000);
+    delay(50);
     return;
   }
 
@@ -209,17 +210,27 @@ void loop() {
   for (size_t i = 0; i < windValues.size(); ++i) {
     int target = windValues[i];
     
-
+        if(invert_map){
+          map_value= map(target,0,180,45,135);
+          invert_map=false;
+          //Serial.println(invert_map);
+        }else{
+          map_value= map(target,0,180,135,45);
+          invert_map=true;
+          //Serial.println(invert_map);
+        }
     // Incrémente ou décrémente par pas de 1 degré jusqu'à la cible
-    while (currentAngle != target) {
-        if (currentAngle < target) currentAngle++;
-        else if (currentAngle > target) currentAngle--;
+    while (currentAngle != map_value) {
+        if (currentAngle < map_value) currentAngle++;
+        else if (currentAngle > map_value) currentAngle--;
 
         // envoie uniquement l'angle intermédiaire via ESP-NOW
+      
+       
         sendAngle(currentAngle);
 
       // Petite pause pour rendre l'incrément visible/souple
-      delay(20);
+      delay(10);
     }
 
   // Arrivé à la cible : affichage id et maintien court
@@ -228,10 +239,11 @@ void loop() {
   Serial.print("ID: ");
   Serial.println(shownId);
   Serial.print("Angle: ");
-  Serial.println(currentAngle);
+ 
+  Serial.println(map_value);
   // envoie l'angle final atteint
   sendAngle(currentAngle);
-  randomSeed(analogRead(0) + currentAngle);
+ // randomSeed(analogRead(0) + currentAngle);
   int holdTime = random(2000, 5000); // maintien entre 2 et 5 secondes
   
     delay(holdTime);
